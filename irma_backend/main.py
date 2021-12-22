@@ -340,6 +340,7 @@ class IrmaBackend:
 
     def sign(self, attributes, message, labels=None):
         """
+        Start an attribute-based signature session
 
         :param list attributes: The attributes to be attached to the attribute-based signature
         :param str message: Message to be signed by the user.
@@ -358,13 +359,16 @@ class IrmaBackend:
         return self.start_session(request)
 
     def revoke(self):
-        pass
+        raise NotImplementedError("This feature has not been implemented yet.")
 
     def get_session(self, session_token):
         """
+        Return the session from given the given token.
 
-        :param session_token:
-        :return:
+        :param str session_token: session token
+
+        :return: session
+        :rtype: IrmaSession
         """
 
         session = self._sessions.get(session_token)
@@ -376,9 +380,12 @@ class IrmaBackend:
 
     def get_session_status(self, session_token):
         """
+        Return session status for given session token.
 
-        :param session_token:
-        :return:
+        :param str session_token: session token
+
+        :return: session status
+        :rtype: json
         """
         return self.get_session(session_token).get_status()
 
@@ -386,7 +393,7 @@ class IrmaBackend:
         """
         Cancel the current session. set the session status to "CANCELLED".
 
-        :param session_token:
+        :param str session_token: session token
         """
         self.get_session(session_token).cancel()
 
@@ -394,10 +401,10 @@ class IrmaBackend:
         """
         Returns result of the current session.
 
-        :param session_token:
+        :param str session_token: session token
 
         :return: session result
-        :rtype: JSON
+        :rtype: json
         """
         return self.get_session(session_token).set_result()
 
@@ -406,8 +413,9 @@ class IrmaBackend:
         If a JWT private key was provided in the configuration of the irma server, then this returns a JWT signed by
         the irma server with session result as JWT body.
 
-        :param session_token:
+        :param str session_token: session token
+
         :return: JWT
-        :rtype: JSON
+        :rtype: json
         """
         return self.get_session(session_token).set_result_jwt()
